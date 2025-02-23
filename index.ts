@@ -7,18 +7,35 @@ import NodeCache from "node-cache";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import fs from "fs";
 
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Setup paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Ensure paths work in both development and production
+// In production, look for files in the same directory as the compiled index.js
 const publicPath =
   process.env.NODE_ENV === "production"
-    ? path.join(process.cwd(), "public")
-    : path.join(__dirname, "public");
+    ? path.join(dirname(__filename), "..", "public")
+    : path.join(dirname(__filename), "public");
+
+// Debug path resolution
+console.log({
+  NODE_ENV: process.env.NODE_ENV,
+  __dirname,
+  publicPath,
+  exists: fs.existsSync(publicPath),
+  files: fs.existsSync(publicPath) ? fs.readdirSync(publicPath) : [],
+});
+
+// Enable CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
