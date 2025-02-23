@@ -1,33 +1,25 @@
 {
   "name": "gh-pinned-repos",
   "version": "1.0.0",
-  "description": "",
+  "description": "GitHub pinned repositories API",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc && pnpm build:css && pnpm copy-files",
-    "build:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css",
-    "copy-files": "copyfiles -u 1 \"public/**/*\" dist",
+    "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "concurrently \"pnpm watch:css\" \"pnpx ts-node --esm index.ts\"",
-    "watch:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch"
+    "dev": "pnpx ts-node --esm index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.8",
     "@types/express": "^5.0.0",
     "axios": "^1.7.9",
-    "concurrently": "^9.1.2",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "node-cache": "^5.1.2",
     "node-html-parser": "^7.0.1",
-    "path": "^0.12.7",
-    "rate-limit": "^0.1.1",
-    "tailwindcss": "^4.0.8",
     "typescript": "^5.7.3"
   }
 }

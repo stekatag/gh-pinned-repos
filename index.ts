@@ -4,39 +4,11 @@ import { parse, HTMLElement } from "node-html-parser";
 import axios from "axios";
 import rateLimit from "express-rate-limit";
 import NodeCache from "node-cache";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import fs from "fs";
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Setup paths
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// In production, look for files in the same directory as the compiled index.js
-const publicPath =
-  process.env.NODE_ENV === "production"
-    ? path.join(dirname(__filename), "..", "public")
-    : path.join(dirname(__filename), "public");
-
-// Debug path resolution
-console.log({
-  NODE_ENV: process.env.NODE_ENV,
-  __dirname,
-  publicPath,
-  exists: fs.existsSync(publicPath),
-  files: fs.existsSync(publicPath) ? fs.readdirSync(publicPath) : [],
-});
-
-// Enable CORS
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
-
+// Rate limiting and caching setup
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5000,
@@ -44,9 +16,15 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-
 const cache = new NodeCache({ stdTTL: 3600 });
 
+// Enable CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+// Types
 type RepositoryData = {
   owner: string;
   repo: string;
@@ -125,32 +103,10 @@ async function parseRepository(
   };
 }
 
-// Serve static files with proper error handling
-app.use(
-  express.static(publicPath, {
-    fallthrough: true, // Allow falling through to next middleware if file not found
-  })
-);
-
-// HTML route with error handling
-app.get("/", (req: Request, res: Response) => {
-  const indexPath = path.join(publicPath, "index.html");
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error("Error serving index.html:", err);
-      res.status(500).send("Error loading page");
-    }
-  });
-});
-
-app.get("/api/repos", async (req: Request, res: Response): Promise<void> => {
-  const username = req.query.username as string;
+// Root route now handles username parameter
+app.get("/:username", async (req: Request, res: Response): Promise<void> => {
+  const { username } = req.params;
   const refresh = req.query.refresh === "true";
-
-  if (!username) {
-    res.status(400).json({ error: "Username is required" });
-    return;
-  }
 
   try {
     const cacheKey = `user_${username}`;
@@ -194,5 +150,5 @@ app.get("/api/repos", async (req: Request, res: Response): Promise<void> => {
 });
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`API server listening on port ${port}`);
 });
