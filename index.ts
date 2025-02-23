@@ -11,7 +11,7 @@ const port = process.env.PORT || 3001;
 // Rate limiting and caching setup
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 5000,
+  max: 1500,
   message: "Too many requests, please try again later.",
 });
 
