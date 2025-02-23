@@ -14,6 +14,12 @@ const port = process.env.PORT || 3001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Ensure paths work in both development and production
+const publicPath =
+  process.env.NODE_ENV === "production"
+    ? path.join(process.cwd(), "public")
+    : path.join(__dirname, "public");
+
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5000,
@@ -102,12 +108,22 @@ async function parseRepository(
   };
 }
 
-// Serve static files from public directory
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files with proper error handling
+app.use(
+  express.static(publicPath, {
+    fallthrough: true, // Allow falling through to next middleware if file not found
+  })
+);
 
-// HTML route
+// HTML route with error handling
 app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  const indexPath = path.join(publicPath, "index.html");
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error("Error serving index.html:", err);
+      res.status(500).send("Error loading page");
+    }
+  });
 });
 
 app.get("/api/repos", async (req: Request, res: Response): Promise<void> => {
