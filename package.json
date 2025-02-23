@@ -1,0 +1,31 @@
+{
+  "name": "gh-pinned-repos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "pnpm build:css && pnpx ts-node --esm index.ts",
+    "dev": "concurrently \"pnpm watch:css\" \"pnpx ts-node --esm index.ts\"",
+    "build:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css",
+    "watch:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.4.1",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.0.8",
+    "@types/express": "^5.0.0",
+    "axios": "^1.7.9",
+    "concurrently": "^9.1.2",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "node-cache": "^5.1.2",
+    "node-html-parser": "^7.0.1",
+    "path": "^0.12.7",
+    "rate-limit": "^0.1.1",
+    "tailwindcss": "^4.0.8",
+    "typescript": "^5.7.3"
+  }
+}
