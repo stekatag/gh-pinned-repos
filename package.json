@@ -2,12 +2,13 @@
   "name": "gh-pinned-repos",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "pnpm build:css && pnpx ts-node --esm index.ts",
-    "dev": "concurrently \"pnpm watch:css\" \"pnpx ts-node --esm index.ts\"",
+    "build": "tsc && pnpm build:css",
     "build:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css",
+    "start": "pnpm build && node dist/index.js",
+    "dev": "concurrently \"pnpm watch:css\" \"pnpx ts-node --esm index.ts\"",
     "watch:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch"
   },
   "keywords": [],
