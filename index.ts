@@ -12,10 +12,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname =
-  process.env.NODE_ENV === "production"
-    ? dirname(dirname(__filename)) // for production (dist folder)
-    : dirname(__filename); // for development
+const __dirname = dirname(__filename);
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
