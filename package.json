@@ -5,8 +5,9 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc && pnpm build:css",
+    "build": "tsc && pnpm build:css && pnpm copy-files",
     "build:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css",
+    "copy-files": "copyfiles -u 1 \"public/**/*\" dist",
     "start": "node dist/index.js",
     "dev": "concurrently \"pnpm watch:css\" \"pnpx ts-node --esm index.ts\"",
     "watch:css": "pnpx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch"
